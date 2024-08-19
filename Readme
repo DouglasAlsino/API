@@ -1,0 +1,138 @@
+# To Do List Application
+
+## Descrição
+
+Este é um aplicativo de lista de tarefas (To Do List) desenvolvido com Node.js e MySQL, que implementa um sistema Kanban com as listas 'Backlog', 'Fazer', 'Fazendo' e 'Feito'. Ele permite adicionar, atualizar, visualizar e deletar tarefas, além de mover as tarefas entre as listas.
+
+## Funcionalidades
+
+- **Inserir Tarefa:** Adicionar uma nova tarefa ao sistema.
+- **Atualizar Tarefa:** Editar o nome da tarefa existente.
+- **Deletar Tarefa:** Remover uma tarefa do sistema.
+- **Atualizas status da Tarefa:** Mover tarefas entre as listas 'Backlog', 'Fazer', 'Fazendo' e 'Feito'.
+- **Listas tarefas:** Lista todas as tarefas salvas
+- **Lista as tarefas por status:** Lista todas as tarefas com o status especifico passado por paramentro
+- **Registrar um usuario:** Possui caastro de usuario
+- **Login do usuario:** Valida Login
+- **Possui Token de autenticação:** Assim que feito Login é gerado um Token de validação para assim fazer as funcionalidas descritas acima (inserir, atualizar, deletar e etc)
+
+## Tecnologias Utilizadas
+
+- **Node.js:** Plataforma de desenvolvimento.
+- **Express.js:** Framework para Node.js para gerenciar rotas e middleware.
+- **MySQL:** Sistema de Gerenciamento de Banco de Dados (SGBD) utilizado para persistência de dados.
+- **JWT (JSON Web Token):** Para autenticação de usuários.
+- **bcrypt.js:** Para criptografar senhas.
+
+
+## Requisitos
+
+- **Node.js:** v14.17.0 ou superior
+- **MySQL:** v8.0 ou superior
+- **NPM:** v6.14.13 ou superior
+- **Postman:** Para testar as rotas da API.
+
+## Instalação
+- **Clone o repositório:**
+git clone "Inserir link do git"
+cd to-do-list
+- **Instale as dependências do projeto:**
+npm install
+- **Configure o banco de dados MySQL:**
+Crie um banco de dados chamado todolistDB.
+Execute o script SQL para criar a tabela de tarefas e usuários:
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+- **Inicie o servidor:**
+node app.js
+O servidor estará disponível em http://localhost:3000.
+
+## Instruções para Testar a API
+- **1 - Registro de Usuário**
+Endpoint: POST /register
+Descrição: Registra um novo usuário.
+Exemplo de Requisição (Postman):
+
+{
+  "username": "exemploUsuario",
+  "password": "senhaSegura"
+}
+
+- **2 - Login de Usuário**
+Endpoint: POST /login
+Descrição: Realiza o login do usuário e retorna um token JWT.
+Exemplo de Requisição (Postman):
+
+{
+  "username": "exemploUsuario",
+  "password": "senhaSegura"
+}
+
+
+- **3 - Inserir Tarefa**
+Endpoint: POST /add
+Descrição: Adiciona uma nova tarefa ao sistema. Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+
+{
+  "task": "Nova tarefa"
+}
+
+
+- **4 -  Atualizar Nome da Tarefa**
+Endpoint: POST /update-name
+Descrição: Atualiza o nome de uma tarefa existente. Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+
+{
+  "id": 1,
+  "name": "Tarefa Atualizada"
+}
+
+- **5 - Atualizar Status da Tarefa**
+Endpoint: POST /update-status
+Descrição: Atualiza o status de uma tarefa para "Backlog", "Fazer", "Fazendo" ou "Feito". Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+
+{
+  "id": 1,
+  "status": "Fazendo"
+}
+
+- **6 - Deletar Tarefa**
+Endpoint: POST /delete
+Descrição: Remove uma tarefa do sistema. Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+
+{
+  "id": 1
+}
+
+- **7 - Listar Todas as Tarefas**
+Endpoint: GET /getallTasks
+Descrição: Retorna todas as tarefas do sistema. Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+
+- **8 - Listar Tarefas por Status**
+Endpoint: GET /getTasksByStatus/:status
+Descrição: Retorna todas as tarefas com um determinado status. Autenticação JWT necessária.
+Exemplo de Requisição (Postman):
+Adicionar o token JWT no cabeçalho x-access-token.
+Exemplo de URL: http://localhost:3000/getTasksByStatus/Fazendo
+
+

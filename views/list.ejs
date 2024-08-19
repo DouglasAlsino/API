@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List Kanban</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+  <div class="kanban">
+    <% if (tasks) { %>
+      <% Object.keys(tasks).forEach(status => { %>
+        <div class="column">
+          <h2><%= status %></h2>
+          <form id="addTaskForm-<%= status %>" action="/add" method="post">
+            <input type="text" name="task" placeholder="New task" required>
+            <button type="submit">Add</button>
+          </form>
+          <ul>
+            <% tasks[status].forEach(task => { %>
+              <li>
+                <form id="updateNameForm-<%= task.id %>" style="display:inline;">
+                  <input type="text" name="name" value="<%= task.name %>">
+                  <input type="hidden" name="id" value="<%= task.id %>">
+                  <button type="submit">Update</button>
+                </form>
+                <form id="updateStatusForm-<%= task.id %>" style="display:inline;">
+                  <select name="status">
+                    <% ['Backlog', 'Fazer', 'Fazendo', 'Feito'].forEach(s => { %>
+                      <option value="<%= s %>" <%= s === status ? 'selected' : '' %>><%= s %></option>
+                    <% }); %>
+                  </select>
+                  <input type="hidden" name="id" value="<%= task.id %>">
+                  <button type="submit">Move</button>
+                </form>
+                <form id="deleteTaskForm-<%= task.id %>" style="display:inline;">
+                  <input type="hidden" name="id" value="<%= task.id %>">
+                  <button type="submit">Delete</button>
+                </form>
+              </li>
+              
+              <script>
+                document.getElementById('addTaskForm-<%= status %>').addEventListener('submit', async function(e) {
+                  e.preventDefault();
+                  console.log(localStorage.getItem('token'));
+                  const task = e.target.elements.task.value;
+                  await axios.post('/add', { task, status }, {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-access-token': localStorage.getItem('token')
+                    }
+                  })
+                  .then(response => {
+                    window.location.reload();
+                  })
+                  .catch(error => {
+                    alert('Failed to add task');
+                    console.error(error);
+                  });
+                });
+
+                document.getElementById('updateNameForm-<%= task.id %>').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const id = e.target.elements.id.value;
+                  const name = e.target.elements.name.value;
+                  axios.post('/update-name', { id, name }, {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-access-token': localStorage.getItem('token')
+                    }
+                  })
+                  .then(response => {
+                    window.location.reload();
+                  })
+                  .catch(error => {
+                    alert('Failed to update task name');
+                    console.error(error);
+                  });
+                });
+
+                document.getElementById('updateStatusForm-<%= task.id %>').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const id = e.target.elements.id.value;
+                  const status = e.target.elements.status.value;
+                  axios.post('/update-status', { id, status }, {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-access-token': localStorage.getItem('token')
+                    }
+                  })
+                  .then(response => {
+                    window.location.reload();
+                  })
+                  .catch(error => {
+                    alert('Failed to update task status');
+                    console.error(error);
+                  });
+                });
+
+                document.getElementById('deleteTaskForm-<%= task.id %>').addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const id = e.target.elements.id.value;
+                  axios.post('/delete', { id }, {
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'x-access-token': localStorage.getItem('token')
+                    }
+                  })
+                  .then(response => {
+                    window.location.reload();
+                  })
+                  .catch(error => {
+                    alert('Failed to delete task');
+                    console.error(error);
+                  });
+                });
+              </script>
+            <% }); %>
+          </ul>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p>You must be logged in to view your tasks. <a href="/login">Login here</a>.</p>
+    <% } %>
+  </div>
+</body>
+</html>
